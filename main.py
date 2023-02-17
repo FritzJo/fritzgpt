@@ -60,33 +60,12 @@ def generateChat(instruction, knowledge, dialog):
 
 print('Ready for text generation!\n')
 
-context1 = """In a shocking finding, scientists discovered a herd of unicorns living in a remote,
-            previously unexplored valley, in the Andes Mountains. Even more surprising to the
-            researchers was the fact that the unicorns spoke perfect English."""
-context2 = """Hello my name is Robin and I'm a pirate. In my last adventure I """
-context3 = """Once upon a time,"""
-context4 = """You are a conversational language model created by OpenAI. Your name is FritzGPT and you answer a users questions. This is the current conversation.
-Q: Hi. Whats your name?
-A: """
-
-inputs = []
-
-for i in inputs:
-    print('--Input: ' + i)
-    start = timeit.default_timer()
-    res = generate(i, the_model=model_name, max_length=len(i) + 200, temperature=0.9, repetition_penalty=1.5)
-
-    print('--Response:')
-    print(res)
-    stop = timeit.default_timer()
-    print('--Time: ', stop - start)
-
 instruction = f'Instruction: given a dialog context, you need to response empathically.'
 knowledge = ''
-dialog = [
-    'Does money buy happiness?',
-    'It is a question. Money buys you a lot of things, but not enough to buy happiness.',
-    'What is the best way to buy happiness ?'
-]
-response = generateChat(instruction, knowledge, dialog)
-print(response)
+dialog = []
+while True:
+    user_input = input("-> ")
+    dialog.append(user_input)
+    response = generateChat(instruction, knowledge, dialog)
+    print(response)
+    dialog.append(response)
