@@ -1,6 +1,4 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM, GPTJForCausalLM, pipeline, GPT2Tokenizer, GPT2Model, \
-    AutoModelForSeq2SeqLM
-import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import timeit
 
 from output import print_custom
@@ -30,9 +28,9 @@ def build_prompt(history):
 def chat(history):
     prompt = build_prompt(history)
     output = generateChat(prompt)
-    print("OUTPUT")
-    print(output)
-    print("-------------------------\nCLEANED")
+    #print("OUTPUT")
+    #print(output)
+    #print("-------------------------\nCLEANED")
     # print(output.replace(prompt, ""))
     # print("-------------------------")
     cleaned_output = output.replace(prompt, "").split("You:")[0].replace("\n\n", "\n")

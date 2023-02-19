@@ -1,71 +1,27 @@
-print('Importing Dependenices...')
-import timeit
-from transformers import AutoTokenizer, AutoModelForCausalLM, GPTJForCausalLM, pipeline, GPT2Tokenizer, GPT2Model, \
-    AutoModelForSeq2SeqLM
-import torch
+from models import PygmalionAI
+from output import print_custom
 
-# Config
-# model_name = "EleutherAI/gpt-j-6B"
-# model_name = "gpt2-medium"
-# model_name = "facebook/opt-66b"
-model_name = "microsoft/GODEL-v1_1-large-seq2seq"
+print_custom("warn", "[INFO] Ready for text generation!")
+print("---------------------------------\n")
 
-# Check GPU
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('Using device:', device)
-
-# Loading Tokenizer
-print('Loading Tokenizer... (' + model_name + ')')
-start = timeit.default_timer()
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-stop = timeit.default_timer()
-print('\tTime: ', stop - start)
-
-# Loading Model
-print('Loading Model...(' + model_name + ')')
-start = timeit.default_timer()
-# model = AutoModelForCausalLM.from_pretrained(model_name)
-model = AutoModelForSeq2SeqLM.from_pretrained(
-    model_name
-    # torch_dtype=torch.float16,
-    # revision="float16",
-    # low_cpu_mem_usage=True,
-    # device_map='auto',
-    # load_in_8bit=True
-)
-stop = timeit.default_timer()
-print('\tTime: ', stop - start)
-
-
-def generate(text, the_model, max_length, temperature, repetition_penalty):
-    generator = pipeline('text-generation', model=the_model)
-    result = generator(text, num_return_sequences=3,
-                       max_length=max_length,
-                       temperature=temperature,
-                       repetition_penalty=repetition_penalty,
-                       no_repeat_ngram_size=2, early_stopping=False)
-    return result[0]["generated_text"]
-
-
-def generateChat(instruction, knowledge, dialog):
-    if knowledge != '':
-        knowledge = '[KNOWLEDGE] ' + knowledge
-    dialog = ' EOS '.join(dialog)
-    query = f"{instruction} [CONTEXT] {dialog} {knowledge}"
-    input_ids = tokenizer(f"{query}", return_tensors="pt").input_ids
-    outputs = model.generate(input_ids, max_length=128, min_length=8, top_p=0.9, do_sample=True)
-    output = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return output
-
-
-print('Ready for text generation!\n')
-
-instruction = f'Instruction: given a dialog context, you need to response empathically.'
-knowledge = ''
-dialog = []
+history = [
+    "FritzGPT's Persona: FritzGPT is an artificial intelligence, designed to help people. "
+    "It answers a users questions as precisely as possible. And knows about all human knowledge.",
+    "It is always helpful, happy and nice. FritzGPT tries to engage in long conversations with its users."
+    "<START>"
+    "You: Hello. Whats your name?"
+    "FritzGPT: Hello, nice to meet you. I'm FritzGPT, but you can also call me Fritz. I'm a chat bot designed to answer your questions."
+    "You: Awesome. Thanks."
+]
 while True:
     user_input = input("-> ")
-    dialog.append(user_input)
-    response = generateChat(instruction, knowledge, dialog)
-    print(response)
-    dialog.append(response)
+    history.append("You: " + user_input)
+    response = PygmalionAI.chat(history)
+    print("FritzGPT: " + str(response))
+    history.append("FritzGPT: " + str(response))
+    # print("Model response:")
+    # print(model_response)
+
+    # print("\nFull instruction:")
+    # print(instruction)
+    # print(response)
