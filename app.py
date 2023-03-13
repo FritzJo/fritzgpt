@@ -1,12 +1,15 @@
+import os
 import uuid
 
-from flask import Flask, redirect
+from flask import Flask, redirect, send_from_directory, session
 from flask import render_template
 
 from models import PygmalionAI
 from output import print_custom
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 print_custom("warn", "[INFO] Ready for text generation!")
 print("---------------------------------\n")
@@ -32,21 +35,26 @@ def add_message(history, user_input):
     return history
 
 
+global histories
 histories = {}
 
 
 @app.route('/')
 def index():
-    chat_id = uuid.uuid4()
-    chat_history = initial_history
-    histories[chat_id] = chat_history
-    return redirect("/chat/" + str(chat_id), code=302)
+    session['chat_id'] = uuid.uuid4()
+    session['history'] = initial_history
+    return redirect("/chat/" + str(session.get('chat_id')), code=302)
+
+
+@app.route('/index.html')
+def home():
+    return render_template('index.html')
 
 
 @app.route("/chat/<chat_id>")
-def chat(chat_id):
-    chat_history = histories[chat_id]
-    return render_template('chat.html', chat_id=chat_id, chat_history=chat_history)
+def chat():
+    rendered_history = session.get('history')[5:]
+    return render_template('chat.html', chat_id=session.get('chat_id'), chat_history=rendered_history)
 
 
 if __name__ == '__main__':

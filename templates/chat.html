@@ -1,7 +1,32 @@
-<h1>FritzGPT - Chat</h1>
-<h2>Chat-ID: {{ chat_id }}</h2>
-{% for message in chat_history %}
-    <div style="padding: 10px; background-color: #EEE; margin: 20px">
-        <p style="font-size: 24px">{{ comment }}</p>
-    </div>
-{% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>FritzGPT</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <link rel="icon" href="{{ url_for('.static', filename='favicon.png') }}">
+</head>
+<body>
+<main class="container">
+    <h1>🤖 FritzGPT - Chat</h1>
+    <h4>Chat-ID: {{ chat_id }}</h4>
+    {% for message in chat_history %}
+        {% if loop.index % 2 == 0 %}
+            <div>
+                <p>{{ message }}</p>
+            </div>
+        {% else %}
+            <div>
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <label for="input">Message:</label>
+    <input type="text" id="chat-input" name="input" required>
+    <button type="submit">Submit</button>
+</main>
+</body>
+
+
