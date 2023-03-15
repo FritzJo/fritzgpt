@@ -1,3 +1,19 @@
-.partner-name {
-    font-weight: bold;
+.left {
+    background-color: #575757;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: 0;
+    border-radius: 10px;
+    width: 50%;
+    margin-bottom: 5px;
+}
+
+.right {
+    background-color: #35414d;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: 0;
+    border-radius: 10px;
+    width: 50%;
+    margin-bottom: 5px;
 }

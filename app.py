@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, redirect, send_from_directory, session
+from flask import Flask, redirect, send_from_directory, session, request
 from flask import render_template
 
 import models.dummy
@@ -57,6 +57,13 @@ def home():
 def chat(chat_id):
     rendered_history = session.get('history')[5:]
     return render_template('chat.html', chat_id=session.get('chat_id'), chat_history=rendered_history)
+
+
+@app.route("/chat/<chat_id>/response", methods=['POST'])
+def response(chat_id):
+    data = request.get_json()['message']
+    print(data)
+    return "OK"
 
 
 if __name__ == '__main__':
