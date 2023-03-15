@@ -5,7 +5,7 @@ from flask import Flask, redirect, session, request, jsonify
 from flask import render_template
 
 import models.dummy
-# from models import PygmalionAI
+from models import PygmalionAI
 from output import print_custom
 
 app = Flask(__name__)
@@ -24,14 +24,15 @@ initial_history = [
     "You: Hello. Whats your name?",
     "FritzGPT: Hello, nice to meet you. I'm FritzGPT, but you can also call me Fritz. I'm a chat bot designed to answer your questions.",
     "You: Awesome. Thanks.",
+    "FritzGPT: I'm glad to help. Feel free to ask me more questions."
 ]
 
 
 def add_message(history, user_input):
     # user_input = input("-> ")
     history.append("You: " + user_input)
-    # response = PygmalionAI.chat(history)
-    response = models.dummy.chat(history)
+    response = PygmalionAI.chat(history)
+    #response = models.dummy.chat(history)
     print("FritzGPT: " + str(response))
     history.append("FritzGPT: " + str(response))
     return history
@@ -61,9 +62,11 @@ def chat(chat_id):
 
 @app.route("/chat/<chat_id>/response", methods=['POST'])
 def response(chat_id):
-    data = request.get_json()['message']
-    print("Got: " + data)
-    res = models.dummy.chat(data)
+    user_input = request.get_json()['message']
+    print("Got: " + user_input)
+    history = session.get('history')
+    history.append("You: " + user_input)
+    res = models.PygmalionAI.chat(history)
     print("Res: " + res)
     return jsonify({'response': res})
 
