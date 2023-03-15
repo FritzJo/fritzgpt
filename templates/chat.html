@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="description" content=""/>
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='style.css') }}">
     <link rel="icon" href="{{ url_for('.static', filename='favicon.png') }}">
 </head>
 <body>
@@ -13,19 +14,18 @@
     <h1>🤖 FritzGPT - Chat</h1>
     <h4>Chat-ID: {{ chat_id }}</h4>
     {% for message in chat_history %}
-        {% if loop.index % 2 == 0 %}
-            <div>
-                <p>{{ message }}</p>
-            </div>
-        {% else %}
-            <div>
-                <p>{{ message }}</p>
-            </div>
-        {% endif %}
+        <div class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+            <p>{% set name, message_body = message.split(':', 1) %}
+                <span class="partner-name">{{ name }}:</span> {{ message_body }}
+            </p>
+        </div>
     {% endfor %}
-    <label for="input">Message:</label>
-    <input type="text" id="chat-input" name="input" required>
-    <button type="submit">Submit</button>
+    <form method="POST" action="/chat{{ chat_id }}/respond">
+        <label for="input">Message:</label>
+        <input type="text" id="chat-input" name="input" required>
+        <input type="hidden" name="chat_history" value="{{ chat_history | tojson }}">
+        <button type="submit">Submit</button>
+    </form>
 </main>
 </body>
 

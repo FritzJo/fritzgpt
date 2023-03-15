@@ -4,7 +4,8 @@ import uuid
 from flask import Flask, redirect, send_from_directory, session
 from flask import render_template
 
-from models import PygmalionAI
+import models.dummy
+# from models import PygmalionAI
 from output import print_custom
 
 app = Flask(__name__)
@@ -29,7 +30,8 @@ initial_history = [
 def add_message(history, user_input):
     # user_input = input("-> ")
     history.append("You: " + user_input)
-    response = PygmalionAI.chat(history)
+    # response = PygmalionAI.chat(history)
+    response = models.dummy.chat(history)
     print("FritzGPT: " + str(response))
     history.append("FritzGPT: " + str(response))
     return history
@@ -52,7 +54,7 @@ def home():
 
 
 @app.route("/chat/<chat_id>")
-def chat():
+def chat(chat_id):
     rendered_history = session.get('history')[5:]
     return render_template('chat.html', chat_id=session.get('chat_id'), chat_history=rendered_history)
 
