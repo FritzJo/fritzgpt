@@ -13,17 +13,20 @@
 <main class="container">
     <h1>🤖 FritzGPT - Chat</h1>
     <h4>Chat-ID: {{ chat_id }}</h4>
-    {% for message in chat_history %}
-        {% if loop.index % 2 == 0 %}
-            <div class="left">
-                <p>{{ message }}</p>
-            </div>
-        {% else %}
-            <div class="right">
-                <p>{{ message }}</p>
-            </div>
-        {% endif %}
-    {% endfor %}
+    <div id="main-chat">
+        {% for message in chat_history %}
+            {% if loop.index % 2 == 0 %}
+                <div class="right">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="left">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
     <form id="chat-form">
         <label for="input">Message:</label>
         <input type="text" id="chat-input" name="input" required>
@@ -39,22 +42,32 @@
         const message = input.value.trim();
         input.value = '';
 
+        // Add user response
+        const chatHistory = document.querySelector('#main-chat');
+        const div = document.createElement('div');
+        div.className = 'left';
+        const p = document.createElement('p');
+        p.textContent = "You: " + message;
+        div.appendChild(p);
+        chatHistory.appendChild(div);
+
+        // Add bot response
         fetch('/chat/{{ chat_id }}/response', {
             method: 'POST',
-            body: JSON.stringify({ message: message, history: {{ chat_history|tojson }} }),
-            headers: { 'Content-Type': 'application/json' }
+            body: JSON.stringify({message: message, history: {{ chat_history|tojson }}}),
+            headers: {'Content-Type': 'application/json'}
         })
-        .then(response => response.json())
-        .then(data => {
-            const chatHistory = document.querySelector('main');
-            const div = document.createElement('div');
-            div.className = 'left';
-            const p = document.createElement('p');
-            p.textContent = data.response;
-            div.appendChild(p);
-            chatHistory.appendChild(div);
-        })
-        .catch(error => console.error(error));
+            .then(response => response.json())
+            .then(data => {
+                const chatHistory = document.querySelector('#main-chat');
+                const div = document.createElement('div');
+                div.className = 'right';
+                const p = document.createElement('p');
+                p.textContent = "FritzGPT: " + data.response;
+                div.appendChild(p);
+                chatHistory.appendChild(div);
+            })
+            .catch(error => console.error(error));
     });
 </script>
 </body>

@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, redirect, send_from_directory, session, request
+from flask import Flask, redirect, session, request, jsonify
 from flask import render_template
 
 import models.dummy
@@ -62,8 +62,10 @@ def chat(chat_id):
 @app.route("/chat/<chat_id>/response", methods=['POST'])
 def response(chat_id):
     data = request.get_json()['message']
-    print(data)
-    return "OK"
+    print("Got: " + data)
+    res = models.dummy.chat(data)
+    print("Res: " + res)
+    return jsonify({'response': res})
 
 
 if __name__ == '__main__':
