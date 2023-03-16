@@ -1,5 +1,8 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 import timeit
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def load_model(target_model_name):
@@ -13,7 +16,7 @@ def load_model(target_model_name):
     # Loading Model
     print("[INFO] Loading Model... (" + target_model_name + ")")
     start = timeit.default_timer()
-    chat_model = AutoModelForCausalLM.from_pretrained(target_model_name).to("cuda")
+    chat_model = AutoModelForCausalLM.from_pretrained(target_model_name).to(device)
     stop = timeit.default_timer()
     print('--> Done in ', stop - start)
     return chat_model, chat_tokenizer, ["You", "FritzGPT"]
@@ -32,13 +35,15 @@ def chat(history):
 
 
 def generate_response(instruction):
-    input_ids = tokenizer(instruction, return_tensors="pt").input_ids.to("cuda")
+    input_ids = tokenizer.encode(instruction, return_tensors="pt").to(device)
     gen_tokens = model.generate(input_ids,
                                 do_sample=True,
                                 temperature=0.9,
-                                max_new_tokens=50,
-                                top_p=0.9)
-    gen_text = tokenizer.batch_decode(gen_tokens)[0]
+                                max_new_tokens=100,
+                                top_p=0.9,
+                                num_return_sequences=1,
+                                pad_token_id=tokenizer.eos_token_id)
+    gen_text = tokenizer.batch_decode(gen_tokens, skip_special_tokens=True)[0]
     return gen_text
 
 
