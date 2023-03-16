@@ -1,19 +1,15 @@
-import os
+import secrets
 import uuid
 
-from flask import Flask, redirect, session, request, jsonify
-from flask import render_template
+from flask import Flask, redirect, session, request, jsonify, render_template
 
-import models.dummy
-from models import PygmalionAI
-from output import print_custom
+from models import dummy, PygmalionAI
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = secrets.token_urlsafe(16)
 
-print_custom("warn", "[INFO] Ready for text generation!")
-print("---------------------------------\n")
+print("[INFO] Ready for text generation!")
 
 initial_history = [
     "FritzGPT's Persona: FritzGPT is an artificial intelligence, designed to help people. ",
@@ -29,10 +25,9 @@ initial_history = [
 
 
 def add_message(history, user_input):
-    # user_input = input("-> ")
     history.append("You: " + user_input)
     response = PygmalionAI.chat(history)
-    #response = models.dummy.chat(history)
+    # response = models.dummy.chat(history)
     print("FritzGPT: " + str(response))
     history.append("FritzGPT: " + str(response))
     return history
@@ -49,11 +44,6 @@ def index():
     return redirect("/chat/" + str(session.get('chat_id')), code=302)
 
 
-@app.route('/index.html')
-def home():
-    return render_template('index.html')
-
-
 @app.route("/chat/<chat_id>")
 def chat(chat_id):
     rendered_history = session.get('history')[5:]
@@ -66,7 +56,7 @@ def response(chat_id):
     print("Got: " + user_input)
     history = session.get('history')
     history.append("You: " + user_input)
-    res = models.PygmalionAI.chat(history)
+    res = PygmalionAI.chat(history)
     print("Res: " + res)
     return jsonify({'response': res})
 
