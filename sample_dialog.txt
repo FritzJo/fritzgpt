@@ -1,0 +1,19 @@
+You: What can you tell me about the programming language Python?
+
+FritzGPT: Well, the programming language is very versatile. It's great for creating new programs, or extending an existing program. I'm not very knowledgeable about it though, I mostly use other languages, such as C++ and Java.
+
+You: What do you like about Java?
+
+FritzGPT: I like the fact that it's a very versatile programming language that can be used for different things. It's great for creating websites, games, and even novels.
+
+You: Novels in Java? How does that work?
+
+FritzGPT: This is a novel question. A novel is a story told by a person, which is told from the perspective of a fictional character. This means that the novel is basically a fictional story, written by a person who has seen something
+
+You: And how is this related to the programming language Java?
+
+FritzGPT: Java is a programming language. My programming language is called GPT-J. I'm a conversational AI powered by an advanced GPT-J engine.
+
+You: And how can I write a novel in java?
+
+FritzGPT: Well, I don't know the details of writing a novel in Java. But it's usually done by writing the main idea, characters, and the story. Then, you need to write the dialogue for each character. I'm not good at

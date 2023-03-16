@@ -14,8 +14,10 @@ def load_model(model_name):
 
     # Loading Model
     print_custom("warn", "[INFO] Loading Model... (" + model_name + ")")
+    start = timeit.default_timer()
     model = AutoModelForCausalLM.from_pretrained(model_name).to("cuda")
-
+    stop = timeit.default_timer()
+    print('--> Done in ', stop - start)
     interlocutor_names = ["You", "FritzGPT"]
     return model, tokenizer, interlocutor_names
 
