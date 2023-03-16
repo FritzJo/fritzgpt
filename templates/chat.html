@@ -26,7 +26,7 @@
             {% endif %}
         {% endfor %}
     </div>
-
+    <div align="right" id="waiting" style="display: none;">...</div>
     <form id="chat-form">
         <label for="input">Message:</label>
         <input type="text" id="chat-input" name="input" required>
@@ -36,14 +36,18 @@
 <script>
     const form = document.getElementById('chat-form');
     const input = document.getElementById('chat-input');
+    const chatHistory = document.querySelector('#main-chat');
+    const waiting = document.querySelector('#waiting');
 
     form.addEventListener('submit', event => {
         event.preventDefault();
         const message = input.value.trim();
         input.value = '';
 
+        // Show "waiting" notification
+        waiting.style.display = 'block';
+
         // Add user response
-        const chatHistory = document.querySelector('#main-chat');
         const div = document.createElement('div');
         div.className = 'left';
         const p = document.createElement('p');
@@ -59,7 +63,9 @@
         })
             .then(response => response.json())
             .then(data => {
-                const chatHistory = document.querySelector('#main-chat');
+                // Hide "waiting" notification
+                waiting.style.display = 'none';
+
                 const div = document.createElement('div');
                 div.className = 'right';
                 const p = document.createElement('p');

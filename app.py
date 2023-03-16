@@ -3,7 +3,8 @@ import uuid
 
 from flask import Flask, redirect, session, request, jsonify, render_template
 
-from models import dummy, PygmalionAI
+from models import dummy
+from models import PygmalionAI
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -22,19 +23,6 @@ initial_history = [
     "You: Awesome. Thanks.",
     "FritzGPT: I'm glad to help. Feel free to ask me more questions."
 ]
-
-
-def add_message(history, user_input):
-    history.append("You: " + user_input)
-    response = PygmalionAI.chat(history)
-    # response = models.dummy.chat(history)
-    print("FritzGPT: " + str(response))
-    history.append("FritzGPT: " + str(response))
-    return history
-
-
-global histories
-histories = {}
 
 
 @app.route('/')
